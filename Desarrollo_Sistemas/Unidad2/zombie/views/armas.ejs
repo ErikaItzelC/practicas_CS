@@ -1,0 +1,18 @@
+<% include _header %>
+<h1> Bienvenido a la guarida zombie </h1>
+
+<% armas.forEach((arma) => { %> 
+<div class = "panel panel-default">
+    
+    
+<div class= "panel-body"><%= arma.descripcion %></div> 
+</div>
+<div class= "panel-body"><%= arma.fuerza %></div> 
+</div>
+<div class= "panel-body"><%= arma.categoria %></div> 
+</div>
+<div class= "panel-body"><%= arma.municion %></div> 
+</div>
+<% }) %>
+
+<% include _footer %>
