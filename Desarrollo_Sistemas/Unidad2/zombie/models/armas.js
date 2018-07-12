@@ -1,18 +1,16 @@
-var mongoose = require ("mongoose");
-
-
+var mongoose = require('mongoose');
 
 var armaSchema = mongoose.Schema({
     descripcion: { type: String, required: true},
-    fuerza: { type: Number, required: true},
-    categoria: {type: String},
-    municiones: { type: Boolean}
-   
+    fuerza: { type: Number },
+    categoria: { type: String },
+    municiones: { type: Boolean }
 });
 
-var donothing = () =>{
 
+armaSchema.methods.name = function() {
+    return this.descripcion || this.categoria;
 }
 
-    var armas = mongoose.model("arma",armaSchema);
-    module.exports = armas;
+var Arma = mongoose.model("Armas", armaSchema);
+module.exports = Arma;

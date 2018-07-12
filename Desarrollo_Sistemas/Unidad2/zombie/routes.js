@@ -2,108 +2,164 @@ var express = require("express");
 var Zombie = require("./models/zombie");
 var Arma = require("./models/armas");
 
-
-
 var passport = require("passport");
+var acl = require("express-acl");
 
 var router = express.Router();
 
-router.use((req, res, next) => {
+acl.config({
+    baseUrl:'/',
+    defaultRole:'zombie',
+    decodedObjectName:'zombie',
+    roleSearchPath: 'zombie.role'
+  
+});
+
+router.use((req, res, next) =>{
     res.locals.currentZombie = req.zombie;
     res.locals.errors = req.flash("error");
     res.locals.infos = req.flash("info");
+    if(req.session.passport){
+        if(req.zombie){
+            req.session.role = req.zombie.role;
+        } else {
+            req.session.role = "zombie";
+        }
+    }
+    console.log(req.session);
     next();
 });
 
+router.use(acl.authorize);
+
 router.get("/", (req, res, next) =>{
     Zombie.find()
-    .sort({ createdAt: "descending"})
-    .exec((err, zombies) => {
+        .sort({ createdAt: "descending"})
+        .exec((err, zombies) => {
+            if(err){
+                return next(err);
+            }
+            res.render("index", {zombies: zombies});
+        });
+});
+
+router.get("/zombies/:username",(req,res,next) =>{
+    Zombie.findOne({ username: req.params.username } , (err,zombie) => {
         if(err){
             return next(err);
         }
-        res.render("index", {zombies: zombies});
+        if(!zombie){
+            return next(404);
+        }
+        res.render("profile",{ zombie:zombie });
     });
 });
-router.post("/login",passport.authenticate("login",{
-    successRedirect:"/",
-    failureRedirect:"/login",
-    failureFlash:true
-}));
-router.get("/logout",(req,res)=>{
-    req.logout();
-    res.redirect("/");
-});
-router.get("/signup", (req, res) => {
+
+router.get("/signup", (req, res) =>{
     res.render("signup");
 });
 
-router.post("/signup", (req, res, next)=>{
+router.post("/signup",(req, res, next)=>{
     var username = req.body.username;
     var password = req.body.password;
+    var role = req.body.role;
 
-    zombie.findOne({username: username}, (err, Zombie) => {
+    Zombie.findOne({ username: username}, (err, zombie) =>{
         if(err){
             return next(err);
         }
-        if(Zombie){
-            req.flash("error", "El nombre de usuario ya ha sido tomado por otro zombie");
+        if(zombie){
+            req.flash("error", "El nombre de usuario ya lo ha tomado otro zombie");
             return res.redirect("/signup");
         }
-        var newZombie = new Zombie ({
+        var newZombie = new Zombie({
             username: username,
-            password: password
+            password: password,
+            role: role
         });
         newZombie.save(next);
         return res.redirect("/");
     });
 });
 
-router.get("/zombies/:username", (req, res, next) => {
-    Zombie.findOne({username: req.params.username}, (err, zombie) => {
+
+
+router.get("/addArmas", (req, res) =>{
+    res.render("addArmas");
+});
+
+router.post("/addArmas",(req, res, next)=>{
+    var descripcion = req.body.descripcion;
+    var categoria = req.body.categoria;
+    var municiones = Boolean(req.body.municiones);
+    var fuerza = req.body.fuerza;
+
+    Arma.findOne({ descripcion: descripcion }, (err, arma) =>{
         if(err){
             return next(err);
         }
-        if(!zombie){
-            return next (404);
-        }
-        res.render("profile", {zombie:zombie});
+        var newArma = new Arma({
+            descripcion: descripcion,
+            categoria: categoria,
+            municiones: municiones,
+            fuerza: fuerza
+        });
+        newArma.save(next);
+        return res.redirect("/armas");
     });
 });
-
-
-//armas
 
 router.get("/armas", (req, res, next) =>{
     Arma.find()
-    .exec((err, armas) => {
-        if(err){
-            return next(err);
-        }
-        res.render("armas", {armas: armas});
-    });
-});
-
-
-router.get("/addarmas", (req, res) => {
-    res.render("addarmas");
-});
-router.post("/addarmas", function(req, res, next){
-    var descripcion = req.body.descripcion;
-    var fuerza = req.body.fuerza;
-    var categoria = req.body.categoria;
-    var municiones = req.body.municiones;
-
-    Arma.findOne((err, armas) => {
-       
-        var newArma = new Arma ({
-            descripcion: descripcion,
-            fuerza:fuerza,
-            categoria:categoria,
-            municiones:municiones
+        .exec((err, armas) => {
+            if(err){
+                return next(err);
+            }
+            res.render("armas", {armas: armas});
         });
-        newArma.save(next);
-        return res.redirect("/");
+});
+
+
+router.get("/login", (req, res) => {
+    res.render("login");
+});
+
+router.post("/login", passport.authenticate("login",{
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true
+}));
+
+router.get("/logout", (req, res) => {
+    req.logout();
+    res.redirect("/");
+});
+
+router.get("/edit", ensureAuthenticated,(req,res) => {
+    res.render("edit");
+});
+
+router.post("/edit", ensureAuthenticated, (req, res, next) => {
+    req.zombie.displayName = req.body.displayName;
+    req.zombie.bio = req.body.bio;
+    req.zombie.save((err) => {
+        if(err){
+            next(err);
+            return;
+        }
+        req.flash("info", "Perfil actualizado!");
+        res.redirect("/edit");
     });
 });
+
+
+function ensureAuthenticated(req, res, next){
+    if(req.isAuthenticated()){
+        next();
+    } else{
+        req.flash("info", "Necesitas iniciar sesión para poder ver esta sección");
+        res.redirect("/login");
+    }
+}
+
 module.exports = router;

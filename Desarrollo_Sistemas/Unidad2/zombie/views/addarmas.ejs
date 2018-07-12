@@ -1,27 +1,24 @@
 <% include _header %>
 
-<h1> Agregar Armas </h1>
+<h1>Registro de armas</h1>
 
-<form action="/addarmas" method="post">
+<form action="/addArmas" method="post">
     <div class="form-group">
-        <input name = "descripcion" type ="text" class="form-control"
-        placeholder="Nombre de la arma" required autofocus />
+        <input name="descripcion" type="text" class="form-control"
+        placeholder="Descripcion" required autofocus/>
     </div>
-    <div class= "form-group">
-        <input name="fuerza" type ="int" class ="form-control"
-        placeholder="Fuerza" required/>
-    </div>
-    <div class= "form-group">
-        <input name="categoria" type ="text" class ="form-control"
+    <div class="form-group">
+        <input name="categoria" type="text" class="form-control"
         placeholder="Categoria" required/>
     </div>
-    <div class= "form-group">
-        <input name="municiones" type ="Boolean" class ="form-control"
-        placeholder="Municiones" required/>
+    <div class="form-group">
+        <input name="fuerza" type="int" class="form-control"
+        placeholder="Fuerza">
     </div>
-    <div>
-    <input type="submit" value="Agregar Arma" class="btn btn-primary btn-block"/>
-    </div>
+    <label>
+        <input name="municiones" type="checkbox"> Municiones
+    </label>
+    <input type="submit" value="Registrarse" class="btn btn-primary btn-block"/>
 </form>
 
 <% include _footer %>

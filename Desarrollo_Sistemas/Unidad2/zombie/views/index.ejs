@@ -1,16 +1,15 @@
 <% include _header %>
-<h1> Bienvenido a la guarida zombie </h1>
+<h1> Bienvenido a la guarida zombie!</h1>
 
-<% zombies.forEach((zombie) => { %> 
-<div class = "panel panel-default">
-    <div class= "panel-heading">
+<% zombies.forEach((zombie) => { %>
+<div class="panel panel-default">
+    <div class="panel-heading">
         <a href="/zombies/<%= zombie.username %>">
-            <%= zombie.name(); %>
+            <%= zombie.name() %>
         </a>
     </div>
-    
     <% if(zombie.bio) { %>
-        <div class= "panel-body"><%= zombie.bio %></div> 
+        <div class="panel-body"><%= zombie.bio %></div>
 <% } %>
 </div>
 <% }) %>

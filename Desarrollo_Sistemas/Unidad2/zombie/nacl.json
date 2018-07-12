@@ -1,0 +1,67 @@
+[{
+    "group":"zombie-king",
+    "permissions":[{
+        "resource":"*",
+        "methods":"*",
+        "action":"allow"
+    }]
+},
+{
+    "group":"zombie",
+    "permissions":[{
+        "resource":"/login",
+        "methods":["GET","POST"],
+        "action":"allow"
+    },
+    {
+    "resource":"/edit",
+    "methods":["GET","POST"],
+    "action":"allow"
+    },
+    {
+        "resource":"/signup",
+        "methods":["GET","POST"],
+        "action":"allow"
+    },
+    {
+        "resource":"/logout",
+        "methods":"*",
+        "action":"allow"
+    }]
+},
+{
+    "group":"zombie-queen",
+    "permissions":[{
+        "resource":"*",
+        "methods":["GET"],
+        "action":"allow"
+    }]
+},
+{
+    "group":"zombie-boss",
+    "permissions":[{
+        "resource":"/armas",
+        "methods":"*",
+        "action":"allow"
+    },
+    {
+        "resource":"/addArmas",
+        "methods":["GET","POST"],
+        "action":"allow"
+    },
+    {
+        "resource":"/edit",
+        "methods":["GET","POST"],
+        "action":"allow"
+    },
+    {
+        "resource":"/login",
+        "methods":["GET","POST"],
+        "action":"allow"
+    },
+    {
+        "resource":"/logout",
+        "methods":"*",
+        "action":"allow"
+    }]
+}]
