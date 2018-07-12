@@ -2,12 +2,12 @@
 <h1> Armas! 
 <a href="/addArmas" class="btn btn-primary pull-right" role="button"> Agregar armas </a></h1>
 <% armas.forEach((arma) => { %>
-<div class="panel panel-danger">
+<div class="panel panel-info">
     <div class="panel-heading">
-         <p><%= arma.categoria %></p>
+         <p><%= arma.descripcion %></p>
     </div>
     <% if(arma.descripcion) { %>
-        <div class="panel-body"><%= arma.descripcion %>
+        <div class="panel-body"><%= arma.categoria %>
         <p></p>
         <% if(arma.fuerza) { %>
             <p>Fuerza: <%= arma.fuerza %></p>
