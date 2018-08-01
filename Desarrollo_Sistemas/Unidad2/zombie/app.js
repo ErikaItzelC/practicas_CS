@@ -13,7 +13,7 @@ var routes = require("./routes");
 var passportsetup = require("./passportsetup");
 var app = express();
 
-mongoose.connect("mongodb://ItzelCarrillo:Erick.10@ds155414.mlab.com:55414/zombie_nest2");
+mongoose.connect("mongodb://Itzel:Erick8@ds155414.mlab.com:55414/zombie_nest2");
 
 passportsetup();
 
